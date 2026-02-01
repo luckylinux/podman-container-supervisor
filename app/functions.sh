@@ -19,7 +19,7 @@ function curl_http_status_code() {
 }
 
 # Logging (General)
-log_message() {
+function log_message() {
     # Input Arguments
     local llevel="$1"
     local lmessage=${*:2}

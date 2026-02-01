@@ -11,7 +11,7 @@ function curl_http_status_code() {
     # Get HTTP Status Code
     local lstatus_code
     local lreturn_code
-    lstatus_code=$(curl -s -o /dev/null -w "%{http_code}" "${ltarget}")
+    lstatus_code=$(curl -L -s -o /dev/null -w "%{http_code}" "${ltarget}")
     lreturn_code=$?
 
     # Debug

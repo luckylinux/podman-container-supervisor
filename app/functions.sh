@@ -5,11 +5,17 @@ function curl_http_status_code() {
     # Input Arguments
     local ltarget="$1"
 
+    # Debug
+    log_debug "Perform CURL Request to ${ltarget}"
+
     # Get HTTP Status Code
     local lstatus_code
     local lreturn_code
     lstatus_code=$(curl -s -o /dev/null -w "%{http_code}" "${ltarget}")
     lreturn_code=$?
+
+    # Debug
+    log_debug "CURL exited with Exit Code ${lreturn_code}. HTTP Status Code was ${lstatus_code}."
 
     # Return Value
     echo "${lstatus_code}"

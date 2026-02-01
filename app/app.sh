@@ -43,8 +43,14 @@ do
     # Check if Health Check exceeded Maximum Number of Attempts
     if [[ ${health_failed_counter} -ge ${HEALTH_RETRIES} ]]
     then
+        # Error
+        log_error "Health Check exit with Exit Code ${health_exit_code}. Health Check Failed Counter is now ${health_failed_counter}."
+
         # Exit with abnormal Exit Code
         exit ${health_exit_code}
+    else
+        # Debug
+        log_debug "Health Check completed successfully"
     fi
 
     # Wait

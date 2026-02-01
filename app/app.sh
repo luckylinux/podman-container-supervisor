@@ -13,7 +13,7 @@ source "${HEALTH_CHECK_PATH}/functions.sh"
 source "${HEALTH_CHECK_PATH}/defaults.sh"
 
 # Echo
-echo "Wait ${HEALTH_START_PERIOD} Seconds to allow Time for Applications to be Monitored to be started"
+log_info "Wait ${HEALTH_START_PERIOD} Seconds to allow Time for Applications to be Monitored to be started"
 
 # Initial Blanking Period
 sleep ${HEALTH_START_PERIOD}
@@ -22,7 +22,7 @@ sleep ${HEALTH_START_PERIOD}
 health_failed_counter=0
 
 # Infinite Loop
-echo "Start Infinite Loop"
+log_info "Start Infinite Loop"
 while true
 do
     # Execute Health Check

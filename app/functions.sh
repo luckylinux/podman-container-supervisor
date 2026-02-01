@@ -28,7 +28,10 @@ log_message() {
     local lformatted_message="[${llevel}]: ${lmessage}"
 
     # Echo to stderr
-    echo "${lformatted_message}" >&2
+    # echo "${lformatted_message}" >&2
+
+    # Echo to stdout
+    echo "${lformatted_message}"
 }
 
 # Logging (Info)

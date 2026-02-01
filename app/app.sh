@@ -39,7 +39,7 @@ do
         # Increase Counter
         health_failed_counter=$((health_failed_counter+1))
     else
-        if ${health_failed_counter} -ne 0 ]]
+        if [[ ${health_failed_counter} -ne 0 ]]
         then
             # Info
             log_info "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter will now be resetted."

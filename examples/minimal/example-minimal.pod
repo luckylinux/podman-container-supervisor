@@ -1,0 +1,13 @@
+[Pod]
+PodName=example-minimal
+
+# Ports
+PublishPort=80:80/tcp
+PublishPort=443:443/tcp
+PublishPort=443:443/udp
+
+# Network Mode
+Network=pasta
+
+[Install]
+WantedBy=default.target

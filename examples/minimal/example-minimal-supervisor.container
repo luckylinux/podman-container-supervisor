@@ -1,0 +1,29 @@
+[Unit]
+Description=Example Minimal Supervisor Container
+
+[Service]
+Restart=always
+
+[Container]
+ContainerName=example-minimal-supervisor
+
+Pod=example-minimal.pod
+StartWithPod=true
+
+# Environment File
+EnvironmentFile=.env.supervisor
+
+# Environment Settings
+Environment=HEALTH_CMD=./healthcheck.sh
+Environment=HEALTH_START_PERIOD=60
+Environment=HEALTH_RETRIES=3
+Environment=HEALTH_INTERVAL=30
+Environment=HEALTH_ON_FAILURE=kill
+
+# Stop Container Immediately
+StopSignal=SIGKILL
+
+Image=podman-container-supervisor:alpine-latest
+Pull=missing
+
+Volume=./healthcheck.sh:/healthcheck.sh:ro,z

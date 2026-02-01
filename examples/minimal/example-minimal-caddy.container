@@ -1,0 +1,27 @@
+[Unit]
+Description=Example Minimal Caddy Container
+Requires=example-minimal-supervisor.service
+After=example-minimal-supervisor.service
+
+[Service]
+Restart=always
+
+[Container]
+ContainerName=example-minimal-caddy
+
+Pod=example-minimal.pod
+StartWithPod=true
+
+Environment=CADDY_DOCKER_CADDYFILE_PATH=/etc/caddy/Caddyfile
+EnvironmentFile=.env
+
+Image=docker.io/library/caddy:latest
+
+NoNewPrivileges=true
+Pull=missing
+
+Volume=./Caddyfile:/etc/caddy/Caddyfile:ro,z
+Volume=./data/caddy:/data/caddy:z
+Volume=./log/caddy:/var/log:z
+Volume=./config/caddy:/config/caddy:z
+Volume=./certificates/letsencrypt:/certificates:ro,z

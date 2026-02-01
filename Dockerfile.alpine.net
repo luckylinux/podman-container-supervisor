@@ -1,0 +1,14 @@
+ARG IMAGE_VERSION
+
+FROM podman-container-supervisor:alpine-base-${IMAGE_VERSION}
+
+# Install other Dependencies / recommended Packages
+# Shadow is needed in order to use "chsh"
+RUN --mount=type=cache,mode=0777,target=/var/cache/apk,sharing=locked \
+    --mount=type=cache,mode=0777,target=/var/lib/apk,sharing=locked \ 
+    apk update && \ 
+    apk add jq net-tools iproute2 bind-tools traceroute tcptraceroute iputils-ping iperf3 tcpdump && \
+    echo "Finished installing extra Packages"
+
+# Copy and Execute Entrypoint Script
+ENTRYPOINT ["/opt/docker-entrypoint.sh"]

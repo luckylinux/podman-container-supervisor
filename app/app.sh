@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Determine toolpath if not set already
+relativepath="./" # Define relative path to go from this script to the root level of the tool
+if [[ ! -v HEALTH_CHECK_PATH ]]; then scriptpath=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ); HEALTH_CHECK_PATH=$(realpath --canonicalize-missing "${scriptpath}/${relativepath}"); fi
+
+# Change to app folder
+cd "/opt/app" || exit
+
+# Include Libraries
+source "${HEALTH_CHECK_PATH}/functions.sh"
+
+# Set Default Values
+source "${HEALTH_CHECK_PATH}/defaults.sh"
+
+# Echo
+echo "Wait ${HEALTH_START_PERIOD} Seconds to allow Time for Applications to be Monitored to be started"
+
+# Initial Blanking Period
+sleep ${HEALTH_START_PERIOD}
+
+# Initialize Counter
+health_failed_counter=0
+
+# Infinite Loop
+echo "Start Infinite Loop"
+while true
+do
+    # Wait
+    sleep ${HEALTH_INTERVAL}
+
+    # Execute Health Check
+    ${HEALTH_CMD}
+
+    # Save Exit Code
+    health_exit_code=$?
+
+    if [[ ${health_exit_code} -ne 0 ]]
+    then
+        # Increase Counter
+        health_failed_counter=$((health_failed_counter+1))
+    else
+        # Reset Counter
+        health_failed_counter=0
+    fi
+
+    # Check if Health Check exceeded Maximum Number of Attempts
+    if [[ ${health_failed_counter} -ge ${HEALTH_RETRIES} ]]
+    then
+        # Exit with abnormal Exit Code
+        exit ${health_exit_code}
+    fi
+done

@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# Determine toolpath if not set already
-relativepath="./" # Define relative path to go from this script to the root level of the tool
-if [[ ! -v HEALTH_CHECK_PATH ]]; then scriptpath=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ); HEALTH_CHECK_PATH=$(realpath --canonicalize-missing "${scriptpath}/${relativepath}"); fi
+# Set HEALTH_CHECK_PATH
+HEALTH_CHECK_PATH="/opt/supervisor"
 
 # Change to app folder
-cd "/opt/app" || exit
+cd "/opt/supervisor" || exit
 
 # Include Libraries
 source "${HEALTH_CHECK_PATH}/functions.sh"
@@ -26,9 +25,6 @@ health_failed_counter=0
 echo "Start Infinite Loop"
 while true
 do
-    # Wait
-    sleep ${HEALTH_INTERVAL}
-
     # Execute Health Check
     ${HEALTH_CMD}
 
@@ -50,4 +46,7 @@ do
         # Exit with abnormal Exit Code
         exit ${health_exit_code}
     fi
+
+    # Wait
+    sleep ${HEALTH_INTERVAL}
 done

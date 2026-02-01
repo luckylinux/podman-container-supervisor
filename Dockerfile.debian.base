@@ -5,8 +5,8 @@ FROM debian:trixie
 ARG TARGETPLATFORM
 #ARG BUILDPLATFORM
 
-# App Path
-ARG APP_PATH="/opt/app"
+# Supervisor Path
+ARG APP_PATH="/opt/supervisor"
 
 # Create Directory for App
 RUN mkdir -p "/opt"

@@ -12,8 +12,45 @@ function curl_http_status_code() {
     lreturn_code=$?
 
     # Return Value
-    echo ${lstatus_code}
+    echo "${lstatus_code}"
 
     # Return Status Code
     return ${lreturn_code}
+}
+
+# Logging (General)
+log_message() {
+    # Input Arguments
+    local llevel="$1"
+    local lmessage=${*:2}
+
+    # Format Message
+    local lformatted_message="[${llevel}]: ${lmessage}"
+
+    # Echo to stderr
+    echo "${lformatted_message}" >&2
+}
+
+# Logging (Info)
+function log_info() {
+    log_message "INFO" "$@"
+}
+
+# Logging (Warning)
+function log_warn() {
+    log_message "WARN" "$@"
+}
+
+# Logging (Error)
+function log_error() {
+    log_message "ERROR" "$@"
+}
+
+# Logging (Debug)
+function log_debug() {
+    # Must be explicitely enabled by setting CONTAINER_DEBUG to >= 1
+    if [ "${HEALTH_DEBUG:-0}" -ge 1 ]
+    then
+        log_message "DEBUG" "$@"
+    fi
 }

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Change to app folder
-cd /opt/app
+# Change to /opt/supervisor Folder
+cd /opt/supervisor
 
-# Start the main process and save its PID
-# Use exec to replace the shell script process with the main process
-exec /opt/app/app.sh &
+# Start the main Process and save its PID
+# Use exec to replace the Shell Script Process with the main Process
+exec /opt/supervisor/app.sh &
 pidh=$!
 
 # Trap the SIGTERM signal and forward it to the main process

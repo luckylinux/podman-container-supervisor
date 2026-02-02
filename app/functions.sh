@@ -33,7 +33,7 @@ function is_pingable_ipv4() {
     local lreturn_code
 
     # Ping using IPv4
-    ping -c4 -4 "${ltarget}"
+    ping -c4 -4 "${ltarget}" > /dev/null
 
     # Store Exit Code
     lreturn_code=$?
@@ -57,7 +57,7 @@ function is_pingable_ipv6() {
     local lreturn_code
 
     # Ping using IPv6
-    ping -c4 -6 "${ltarget}"
+    ping -c4 -6 "${ltarget}" > /dev/null
 
     # Store Exit Code
     lreturn_code=$?

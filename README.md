@@ -129,6 +129,16 @@ is_tcp_listening 443
 # Check if Caddy is listening on TCP Port 80 (HTTP)
 is_tcp_listening 80
 
+# Check that HTTP Status Code is 200 when querying Caddy Webserver
+http_status_code=$(curl_http_status_code "https://MYHOST.MYDOMAIN.TLD")
+curl_return_code=$?
+
+if [[ ${http_status_code} -ne 200 ]]
+then
+    # Exit abnormally
+    exit 1
+fi
+
 # Exit Normally
 exit 0
 ```

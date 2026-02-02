@@ -112,25 +112,26 @@ Volume=./healthcheck.sh:/healthcheck.sh:ro,z
 set -e
 
 # Ping GHCR.io (IPv4)
-ping -c4 -4 ghcr.io
+is_pingable_ipv4 "ghcr.io"
 
 # Ping GHCR.io (IPv6)
-ping -c4 -6 ghcr.io
+is_pingable_ipv6 "ghcr.io"
 
 # Ping hub.docker.com (IPv4)
-ping -c4 -4 hub.docker.com
+is_pingable_ipv4 "hub.docker.com"
 
 # Ping hub.docker.com (IPv6)
-ping -c4 -6 hub.docker.com
+is_pingable_ipv6 "hub.docker.com"
 
-# Check if TCP Port is listening
-bash -c "</dev/tcp/localhost/${port}"
+# Check if Caddy is listening on TCP Port 443 (HTTPS)
+is_tcp_listening 443
 
-# Check if UDP Port is listening
-
+# Check if Caddy is listening on TCP Port 80 (HTTP)
+is_tcp_listening 80
 
 # Exit Normally
 exit 0
 ```
 
 # Example
+See Examples in the `examples/` Subfolder of this Repository.

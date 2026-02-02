@@ -24,6 +24,150 @@ function curl_http_status_code() {
     return ${lreturn_code}
 }
 
+# Check PING (IPv4)
+function is_pingable_ipv4() {
+    # Input Arguments
+    local ltarget="$1"
+
+    # Pre-declare Variable
+    local lreturn_code
+
+    # Ping using IPv4
+    ping -c4 -4 "${ltarget}"
+
+    # Store Exit Code
+    lreturn_code=$?
+
+    if [[ ${lreturn_code} -ne 0 ]]
+    then
+        # Log Error
+        log_error "PING Error: ${ltarget} couldn't be reached"
+    fi
+
+    # Return Code
+    return ${lreturn_code}
+}
+
+# Check PING (IPv6)
+function is_pingable_ipv6() {
+    # Input Arguments
+    local ltarget="$1"
+
+    # Pre-declare Variable
+    local lreturn_code
+
+    # Ping using IPv6
+    ping -c4 -6 "${ltarget}"
+
+    # Store Exit Code
+    lreturn_code=$?
+
+    if [[ ${lreturn_code} -ne 0 ]]
+    then
+        # Log Error
+        log_error "PING Error: ${ltarget} couldn't be reached"
+    fi
+
+    # Return Code
+    return ${lreturn_code}
+}
+
+# Check PING (Any)
+function is_pingable_any() {
+    # Input Arguments
+    local ltarget="$1"
+
+    # Pre-declare Variable
+    local lreturn_code
+
+    # Ping using IPv4
+    is_pingable_ipv4 "${ltarget}"
+
+    # Store Exit Code
+    lreturn_code=$?
+
+    if [[ ${lreturn_code} -ne 0 ]]
+    then
+        # Ping using IPv6
+        is_pingable_ipv6 "${ltarget}"
+
+        # Store Exit Code
+        lreturn_code=$?
+
+        if [[ ${lreturn_code} -ne 0 ]]
+        then
+            # Log Error
+            log_error "PING Error: ${ltarget} couldn't be reached"
+
+            # Return
+            return ${lreturn_code}
+        fi
+    fi
+
+    # Return Code
+    return ${lreturn_code}
+}
+
+# Check PING (IPv4 + IPv6)
+function is_pingable_dual() {
+    # Input Arguments
+    local ltarget="$1"
+
+    # Pre-declare Variable
+    local lreturn_code
+
+    # Ping using IPv4
+    is_pingable_ipv4 "${ltarget}"
+
+    # Store Exit Code
+    lreturn_code=$?
+
+    if [[ ${lreturn_code} -eq 0 ]]
+    then
+        # Ping using IPv6
+        is_pingable_ipv6 "${ltarget}"
+
+        # Store Exit Code
+        lreturn_code=$?
+
+        if [[ ${lreturn_code} -eq 0 ]]
+        then
+            # Return
+            return ${lreturn_code}
+        fi
+    fi
+
+    # Log Error
+    log_error "PING Error: ${ltarget} couldn't be reached"
+
+    # Return Status Code
+    return ${lreturn_code}
+}
+
+# Check if TCP Port is listening
+function is_tcp_listening() {
+    # Input Arguments
+    local lport="$1"
+
+    # Pre-declare Variable
+    local lreturn_code
+
+    # Check if TCP Port is listening
+    bash -c "</dev/tcp/localhost/${lport}"
+
+    # Store Exit Code
+    lreturn_code=$?
+
+    if [[ ${lreturn_code} -ne 0 ]]
+    then
+        # Print Warning
+        log_error "TCP Port ${lport} is not listening"
+    fi
+
+    # Return Code
+    return ${lreturn_code}
+}
+
 # Logging (General)
 function log_message() {
     # Input Arguments

@@ -4,6 +4,7 @@
 function curl_http_status_code() {
     # Input Arguments
     local ltarget="$1"
+    local lopts="$2"
 
     # Debug
     log_debug "Perform CURL Request to ${ltarget}"
@@ -11,7 +12,7 @@ function curl_http_status_code() {
     # Get HTTP Status Code
     local lstatus_code
     local lreturn_code
-    lstatus_code=$(curl -L -s -o /dev/null -w "%{http_code}" "${ltarget}")
+    lstatus_code=$(curl -L -s -o /dev/null "${lopts}" -w "%{http_code}" "${ltarget}")
     lreturn_code=$?
 
     # Debug
@@ -22,6 +23,65 @@ function curl_http_status_code() {
 
     # Return Status Code
     return ${lreturn_code}
+}
+
+# Is reachable over HTTP
+function is_http_reachable() {
+    # Input Arguments
+    local ltarget="$1"
+    local lopts="$2"
+
+    # Initialize Local Variables
+    local lstatus
+    local lreturn_code
+    lstatus="ERROR"
+    lreturn_code=99
+
+    # Perform HTTP Request
+    http_status_code=$(curl_http_status_code "https://${ltarget}" "${lopts}")
+    curl_return_code=$?
+
+    if [[ ${curl_return_code} -eq 0 ]]
+    then
+        # Check if Valid HTTP Response
+        case "${http_status_code}" in
+
+            # Valid HTTP Status Codes: 200, 304
+            "200" | "304" )
+                lstatus="OK"
+                lreturn_code=0 ;;
+
+            # HTTP Status Codes that indicate a Failure
+            *)
+                lstatus="ERROR"
+                lreturn_code=1 ;;
+        esac
+    else
+        # Set Status Code same as CURL
+        lstatus="ERROR"
+        lreturn_code=${curl_return_code}
+    fi
+
+    # Return Status Code
+    return ${lreturn_code}
+}
+
+# Is reachable over HTTP (IPv4)
+function is_http_reachable_ipv4() {
+    # Input Arguments
+    local ltarget="$1"
+
+    # Run Generic Function
+    is_http_reachable "${ltarget}" "-4"
+}
+
+# Is reachable over HTTP (IPv6)
+function is_http_reachable_ipv6() {
+    # Input Arguments
+    local ltarget="$1"
+
+    # Run Generic Function
+    is_http_reachable "${ltarget}" "-6"
 }
 
 # Check PING (IPv4)

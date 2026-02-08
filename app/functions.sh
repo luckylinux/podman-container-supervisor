@@ -38,7 +38,7 @@ function is_http_reachable() {
     lreturn_code=99
 
     # Perform HTTP Request
-    http_status_code=$(curl_http_status_code "https://${ltarget}" "${lopts}")
+    http_status_code=$(curl_http_status_code "${ltarget}" "${lopts}")
     curl_return_code=$?
 
     if [[ ${curl_return_code} -eq 0 ]]

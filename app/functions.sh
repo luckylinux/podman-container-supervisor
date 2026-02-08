@@ -9,10 +9,18 @@ function curl_http_status_code() {
     # Debug
     log_debug "Perform CURL Request to ${ltarget}"
 
+    # CURL does NOT support Empty Arguments, thus make sure that there is actually something there
+    local largs
+    largs=()
+    if [[ -n "${lopts}" ]]
+    then
+        largs+=("${lopts}")
+    fi
+
     # Get HTTP Status Code
     local lstatus_code
     local lreturn_code
-    lstatus_code=$(curl -L -s -o /dev/null "${lopts}" -w "%{http_code}" "${ltarget}")
+    lstatus_code=$(curl -L -s -o /dev/null ${largs[*]} -w "%{http_code}" "${ltarget}")
     lreturn_code=$?
 
     # Debug

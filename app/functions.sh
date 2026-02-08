@@ -4,7 +4,7 @@
 function curl_http_status_code() {
     # Input Arguments
     local ltarget="$1"
-    local lopts="$2"
+    local lopts=${2-""}
 
     # Debug
     log_debug "Perform CURL Request to ${ltarget}"
@@ -29,7 +29,7 @@ function curl_http_status_code() {
 function is_http_reachable() {
     # Input Arguments
     local ltarget="$1"
-    local lopts="$2"
+    local lopts=${2-""}
 
     # Initialize Local Variables
     local lstatus

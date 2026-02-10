@@ -38,19 +38,19 @@ then
 
         if [[ ${health_exit_code} -ne 0 ]]
         then
-            # Error
-            log_error "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter is now ${health_failed_counter}."
-
             # Increase Counter
             health_failed_counter=$((health_failed_counter+1))
+
+            # Error
+            log_error "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter is now [${health_failed_counter} / ${HEALTH_RETRIES}]."
         else
             if [[ ${health_failed_counter} -ne 0 ]]
             then
-                # Info
-                log_info "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter will now be resetted."
-
                 # Reset Counter
                 health_failed_counter=0
+
+                # Info
+                log_info "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter resetted to [${health_failed_counter} / ${HEALTH_RETRIES}]."
             fi
 
             # Debug

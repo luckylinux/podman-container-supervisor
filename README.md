@@ -91,8 +91,12 @@ HealthStartPeriod=15s
 HealthRetries=2
 HealthInterval=5s
 HealthOnFailure=kill
+#HealthLogDestination=/home/podman/containers/quadlets/<application>/healthcheck
+Environment=HEALTH_DEBUG=0
+Environment=HEALTH_START_PERIOD=0
+Environment=HEALTH_INTERVAL=0
+Environment=HEALTH_INTERNAL_LOOP=0
 
-HealthLogDestination=/home/podman/containers/quadlets/<application>/healthcheck
 
 # Stop Container Immediately
 StopSignal=SIGKILL

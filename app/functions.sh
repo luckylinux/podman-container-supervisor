@@ -23,8 +23,16 @@ function curl_http_status_code() {
     lstatus_code=$(curl -L -s -o /dev/null ${largs[*]} -w "%{http_code}" "${ltarget}")
     lreturn_code=$?
 
-    # Debug
-    log_debug "CURL exited with Exit Code ${lreturn_code}. HTTP Status Code was ${lstatus_code}."
+    # Display Error if any
+    if [[ ${lstatus_code} -ne 0 ]]
+    then
+        # Error
+        log_error "Error occurred when querying ${ltarget}."
+        log_error "CURL exited with Exit Code ${lreturn_code}. HTTP Status Code was ${lstatus_code}."
+    else
+        # Debug
+        log_debug "CURL exited with Exit Code ${lreturn_code}. HTTP Status Code was ${lstatus_code}."
+    fi
 
     # Return Value
     echo "${lstatus_code}"

@@ -12,54 +12,69 @@ source "${HEALTH_CHECK_PATH}/functions.sh"
 # Set Default Values
 source "${HEALTH_CHECK_PATH}/defaults.sh"
 
-# Echo
-log_info "Wait ${HEALTH_START_PERIOD} Seconds to allow Time for Applications to be Monitored to be started"
+# Check if Health Internal Loop is enabled
+# Otherwise it could be that the Container is being monitored using Podman HealthCheck, thus this does NOT need to do anything except sleep
 
-# Initial Blanking Period
-sleep ${HEALTH_START_PERIOD}
+if [[ ${HEALTH_INTERNAL_LOOP} -eq 1 ]]
+then
+    # Echo
+    log_info "Wait ${HEALTH_START_PERIOD} Seconds to allow Time for Applications to be Monitored to be started"
 
-# Initialize Counter
-health_failed_counter=0
+    # Initial Blanking Period
+    sleep "${HEALTH_START_PERIOD}"
 
-# Infinite Loop
-log_info "Start Supervisor Infinite Loop"
-while true
-do
-    # Execute Health Check
-    ${HEALTH_CMD}
+    # Initialize Counter
+    health_failed_counter=0
 
-    # Save Exit Code
-    health_exit_code=$?
+    # Infinite Loop
+    log_info "Start Supervisor Infinite Loop"
+    while true
+    do
+        # Execute Health Check
+        ${HEALTH_CMD}
 
-    if [[ ${health_exit_code} -ne 0 ]]
-    then
-        # Error
-        log_error "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter is now ${health_failed_counter}."
+        # Save Exit Code
+        health_exit_code=$?
 
-        # Increase Counter
-        health_failed_counter=$((health_failed_counter+1))
-    else
-        if [[ ${health_failed_counter} -ne 0 ]]
+        if [[ ${health_exit_code} -ne 0 ]]
         then
-            # Info
-            log_info "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter will now be resetted."
+            # Error
+            log_error "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter is now ${health_failed_counter}."
 
-            # Reset Counter
-            health_failed_counter=0
+            # Increase Counter
+            health_failed_counter=$((health_failed_counter+1))
+        else
+            if [[ ${health_failed_counter} -ne 0 ]]
+            then
+                # Info
+                log_info "Health Check exited with Exit Code ${health_exit_code}. Health Check Failed Counter will now be resetted."
+
+                # Reset Counter
+                health_failed_counter=0
+            fi
+
+            # Debug
+            log_debug "Health Check completed successfully"
+
         fi
 
-        # Debug
-        log_debug "Health Check completed successfully"
+        # Check if Health Check exceeded Maximum Number of Attempts
+        if [[ ${health_failed_counter} -ge ${HEALTH_RETRIES} ]]
+        then
+            # Exit with abnormal Exit Code
+            exit ${health_exit_code}
+        fi
 
-    fi
+        # Wait
+        sleep "${HEALTH_INTERVAL}"
+    done
+else
+    # Infinite Sleep Loop
+    log_info "Infinite Sleep Loop (HEALTH_INTERNAL_LOOP was set to ${HEALTH_INTERNAL_LOOP})"
+    log_info "This Main Application will only wait for external Podman HealthChecks to run and will NOT perform any action internally."
 
-    # Check if Health Check exceeded Maximum Number of Attempts
-    if [[ ${health_failed_counter} -ge ${HEALTH_RETRIES} ]]
-    then
-        # Exit with abnormal Exit Code
-        exit ${health_exit_code}
-    fi
-
-    # Wait
-    sleep ${HEALTH_INTERVAL}
-done
+    while true
+    do
+        sleep 5
+    done
+fi

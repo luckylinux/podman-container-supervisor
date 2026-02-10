@@ -60,3 +60,13 @@ then
     # Debug
     log_info "Setting Variable HEALTH_INTERNAL_LOOP to ${HEALTH_INTERNAL_LOOP} (Default Value)"
 fi
+
+# Default Output to stderr
+if [[ ! -v HEALTH_OUTPUT_STREAM ]]
+then
+    # Set Value
+    HEALTH_OUTPUT_STREAM="stderr"
+
+    # Debug
+    log_info "Setting Variable HEALTH_OUTPUT_STREAM to ${HEALTH_OUTPUT_STREAM} (Default Value)"
+fi

@@ -20,7 +20,7 @@ function curl_http_status_code() {
     # Get HTTP Status Code
     local lstatus_code
     local lreturn_code
-    lstatus_code=$(curl -L -s -o /dev/null ${largs[*]} -w "%{http_code}" "${ltarget}")
+    lstatus_code=$(curl -L -s -o /dev/null ${largs[*]} -w "%{http_code}" "${ltarget}" | return_value)
     lreturn_code=$?
 
     # Display Error if any
@@ -35,7 +35,7 @@ function curl_http_status_code() {
     fi
 
     # Return Value
-    echo "${lstatus_code}"
+    return_value "${lstatus_code}"
 
     # Return Status Code
     return ${lreturn_code}
@@ -244,6 +244,61 @@ function is_tcp_listening() {
     return ${lreturn_code}
 }
 
+# Initialize Custom File Descriptor
+# https://unix.stackexchange.com/a/218355
+function open_fd() {
+    # Input Parameters
+    local lfd="$1"
+
+    if [[ ! -e "/dev/fd/${lfd}" ]]
+    then
+        # Open File Descriptor (show Output)
+        # eval "exec ${lfd}>&1"
+
+        # Open File Descriptor (hide Output)
+        eval "exec ${lfd}> /dev/null"
+    fi
+}
+
+# Close Custom File Descriptor
+function close_fd() {
+    # Input Parameters
+    local lfd="$1"
+
+    if [[ -e "/dev/fd/${lfd}" ]]
+    then
+        # Close File Descriptor
+        eval "exec ${lfd}>&-"
+    fi
+}
+
+# Return Value
+function return_value() {
+    # Input Arguments
+    local lvalue
+
+    # Open File Descriptor
+    open_fd 3
+
+    # Try to get Input from HereDoc
+    mapfile -t lvalue < <( timeout 0.5 bash -c "cat /dev/stdin" )
+
+    if [[ -z "${lvalue}" ]]
+    then
+        # If no Lines are Read from stdin, take Value from first Argument ($1)
+        lvalue="$1"
+    else
+        # Nothing to do
+        local lx=0
+    fi
+
+    # Return Value
+    echo "${lvalue}" 3>&1 >&3
+
+    # Close File Descriptor
+    close_fd 3
+}
+
 # Logging (General)
 function log_message() {
     # Input Arguments
@@ -253,11 +308,17 @@ function log_message() {
     # Format Message
     local lformatted_message="[${llevel}]: ${lmessage}"
 
-    # Echo to stderr
-    echo "${lformatted_message}" >&2
+    if [[ "${HEALTH_OUTPUT_STREAM}" == *"stderr"* ]]
+    then
+        # Write to stderr
+        echo "${lformatted_message}" >&2
+    fi
 
-    # Echo to stdout
-    # echo "${lformatted_message}"
+    if [[ "${HEALTH_OUTPUT_STREAM}" == *"stdout"* ]]
+    then
+        # Write to stdout
+        echo "${lformatted_message}"
+    fi
 }
 
 # Logging (Info)

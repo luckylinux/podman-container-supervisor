@@ -56,6 +56,7 @@ Environment=HEALTH_START_PERIOD=60
 Environment=HEALTH_RETRIES=3
 Environment=HEALTH_INTERVAL=30
 Environment=HEALTH_ON_FAILURE=kill
+Environment=HEALTH_OUTPUT_STREAM=stderr
 
 # Stop Container Immediately
 StopSignal=SIGKILL
@@ -96,7 +97,7 @@ Environment=HEALTH_DEBUG=0
 Environment=HEALTH_START_PERIOD=0
 Environment=HEALTH_INTERVAL=0
 Environment=HEALTH_INTERNAL_LOOP=0
-
+Environment=HEALTH_OUTPUT_STREAM=stdout,stderr
 
 # Stop Container Immediately
 StopSignal=SIGKILL

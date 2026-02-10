@@ -20,11 +20,11 @@ function curl_http_status_code() {
     # Get HTTP Status Code
     local lstatus_code
     local lreturn_code
-    lstatus_code=$(curl -L -s -o /dev/null ${largs[*]} -w "%{http_code}" "${ltarget}" | return_value)
+    lstatus_code=$(curl -L -s -o /dev/null ${largs[*]} -w "%{http_code}" "${ltarget}")
     lreturn_code=$?
 
     # Display Error if any
-    if [[ ${lstatus_code} -ne 0 ]]
+    if [[ ${lreturn_code} -ne 0 ]]
     then
         # Error
         log_error "Error occurred when querying ${ltarget}."

@@ -62,7 +62,7 @@ then
         if [[ ${health_failed_counter} -ge ${HEALTH_RETRIES} ]]
         then
             # Exit with abnormal Exit Code
-            exit ${health_exit_code}
+            exit 1
         fi
 
         # Wait

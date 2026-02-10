@@ -253,10 +253,10 @@ function open_fd() {
     if [[ ! -e "/dev/fd/${lfd}" ]]
     then
         # Open File Descriptor (show Output)
-        # eval "exec ${lfd}>&1"
+        eval "exec ${lfd}>&1"
 
         # Open File Descriptor (hide Output)
-        eval "exec ${lfd}> /dev/null"
+        # eval "exec ${lfd}> /dev/null"
     fi
 }
 

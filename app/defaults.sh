@@ -55,7 +55,7 @@ fi
 if [[ ! -v HEALTH_INTERNAL_LOOP ]]
 then
     # Set Value
-    HEALTH_INTERNAL_LOOP=0
+    HEALTH_INTERNAL_LOOP=1
 
     # Debug
     log_info "Setting Variable HEALTH_INTERNAL_LOOP to ${HEALTH_INTERNAL_LOOP} (Default Value)"
